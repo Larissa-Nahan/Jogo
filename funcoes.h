@@ -11,7 +11,7 @@ int game = 0; 							//game = 0,  rodando X game = 1, game over
 int posicaoMenu = 1, posicaoJogo = 1;				//posição inicial da seta no menu/jogo ("Iniciar jogo"/"Puxar carta" respectivamente)
 int teclaPressionadaMenu = 0, teclaPressionadaJogo = 0;		//teclas que vão ser pressionadas no menu/jogo (valores em ASCII)
 int score = 0;							//auxiliar que guarda o score															
-int high = 0;							//auxiliar que guarda o maior score
+int high = 0;						//auxiliar que guarda o maior score
 char nome[3];
 
 int valorCarta;							//quanto a carta vale de 1 ~ 13															
@@ -42,9 +42,10 @@ void menuMovimento(){		/*FUNÇÃO: menu (com movimentos da seta)*/
 		setaMenu(2, posicaoMenu); printf(" Regras\n");
 		setaMenu(3, posicaoMenu); printf(" High score\n");
 		setaMenu(4, posicaoMenu); printf(" Créditos\n");
+		setaMenu(5, posicaoMenu); printf(" Sair\n");
 		
 		teclaPressionadaMenu = getch();						//pegar a ultima tecla digitada	
-			if(teclaPressionadaMenu == 80 && posicaoMenu != 4){	/*80 representa a tecla baixo*/		//se clicar na tecla 'baixo' em qualquer posição que não a 4ª/ultima, a seta desce
+			if(teclaPressionadaMenu == 80 && posicaoMenu != 5){	/*80 representa a tecla baixo*/		//se clicar na tecla 'baixo' em qualquer posição que não a 4ª/ultima, a seta desce
 				printf("\a");						//barulho 'beep' para quando mexe a seta/aperta as teclas cima-baixo
 				posicaoMenu++;
 			}
@@ -57,6 +58,9 @@ void menuMovimento(){		/*FUNÇÃO: menu (com movimentos da seta)*/
 					posicaoMenu = posicaoMenu;			//se clicar em outra tecla que não seja tecla 'cima', 'baixo' ou 'ENTER', não mudar a posição
 				}						
 			}
+	}
+	if(teclaPressionadaMenu == 13 && posicaoMenu == 5){
+		game=1;
 	}
 }
 
@@ -184,7 +188,7 @@ int Jogador(){		/*FUNÇÃO: ?*/
 		Ver = 1;
 	}
 	system("Cls");
-	if(Ver ==1){
+	if(Ver == 1){
 		if (SN == 2){	//retorna que o jogador não quer mais cartas
 			return 404;
 		}
@@ -205,6 +209,8 @@ void voltar(){		/*FUNÇÃO: voltar ao menu*/
 
 int highScore(){		/*FUNÇÃO: verificar se highscore*/				
 	if(score > high){
+		remove("Ganhador.txt");
+		remove("HighScore.txt");
 		high = score;
 		printf("        ------------------");
 		printf("\n        Novo High Score!!!");
@@ -238,6 +244,9 @@ int highScore(){		/*FUNÇÃO: verificar se highscore*/
 }
 
 int jogoMovimento(){		/*FUNÇÃO: jogo ? (com movimentos da seta)*/
+		numeros = fopen("HighScore.txt", "r");
+		fscanf(numeros, "%d", &high);
+		fclose(numeros);
 
 	if(teclaPressionadaMenu == 13 && posicaoMenu == 1){
 		system("Cls");
@@ -406,8 +415,8 @@ void instrucao(){		/*FUNÇÃO: mostrar as instruções do jogo*/
 
 void consultarHighScore(){		/*FUNÇÃO: mostrar o highscore do jogo*/
 	if(teclaPressionadaMenu == 13 && posicaoMenu == 3){
-		int scoreX, scoreY, scoreZ;
-		char nomeX[3], nomeY[3], nomeZ[3];
+		int scoreX;
+		char nomeX[3];
 		 
 		system("Cls");
 		
@@ -422,18 +431,8 @@ void consultarHighScore(){		/*FUNÇÃO: mostrar o highscore do jogo*/
 		
 		fscanf(numeros, "%d", &scoreX);
 		fgets(nomeX, 5, nomes);
-			printf("\n\n\t     3º Lugar - %d", scoreX);
+			printf("\n\n\t     %d pontos", scoreX);
 			printf(" - %s", nomeX);
-		
-		fscanf(numeros, "%d", &scoreY);
-		fgets(nomeY, 5, nomes);
-			printf("\n\n\t     2º Lugar - %d", scoreY);
-			printf(" - %s", nomeY);
-		
-		fscanf(numeros, "%d", &scoreZ);
-		fgets(nomeZ, 5, nomes);
-			printf("\n\n\t     1º Lugar - %d", scoreZ);
-			printf(" - %s", nomeZ);
 			
 		fclose(numeros);
 		fclose(nomes);
